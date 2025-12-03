@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+  <head>
+    <meta charset="utf-8" />
+    <link rel="icon" href="%PUBLIC_URL%/favicon.ico" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="theme-color" content="#5D5CDE" />
+    <meta
+      name="description"
+      content="منصة إدارة شات بوت واتساب - أداة شاملة لإدارة روبوتات المحادثة على واتساب"
+    />
+    <link rel="apple-touch-icon" href="%PUBLIC_URL%/logo192.png" />
+    <link rel="manifest" href="%PUBLIC_URL%/manifest.json" />
+    
+    <!-- Preload fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    
+    <title>منصة إدارة شات بوت واتساب</title>
+    
+    <style>
+      /* Loading styles */
+      body {
+        margin: 0;
+        font-family: 'Cairo', -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
+          'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
+          sans-serif;
+        -webkit-font-smoothing: antialiased;
+        -moz-osx-font-smoothing: grayscale;
+        direction: rtl;
+      }
+
+      .loading-screen {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: linear-gradient(135deg, #5D5CDE, #25D366);
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        color: white;
+        z-index: 9999;
+      }
+
+      .loading-logo {
+        width: 64px;
+        height: 64px;
+        background: rgba(255, 255, 255, 0.2);
+        border-radius: 16px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin-bottom: 24px;
+        font-size: 24px;
+        font-weight: bold;
+      }
+
+      .loading-spinner {
+        width: 40px;
+        height: 40px;
+        border: 4px solid rgba(255, 255, 255, 0.3);
+        border-top: 4px solid white;
+        border-radius: 50%;
+        animation: spin 1s linear infinite;
+        margin-bottom: 16px;
+      }
+
+      .loading-text {
+        font-size: 18px;
+        font-weight: 500;
+      }
+
+      @keyframes spin {
+        0% { transform: rotate(0deg); }
+        100% { transform: rotate(360deg); }
+      }
+
+      /* Hide loading screen once React loads */
+      #root:not(:empty) + .loading-screen {
+        display: none;
+      }
+      
+      /* Dark mode CSS variables */
+      :root {
+        --toast-bg: #ffffff;
+        --toast-color: #374151;
+      }
+      
+      .dark {
+        --toast-bg: #374151;
+        --toast-color: #f3f4f6;
+      }
+    </style>
+  </head>
+  <body>
+    <noscript>يحتاج هذا التطبيق إلى JavaScript ليعمل بشكل صحيح.</noscript>
+    <div id="root"></div>
+    
+    <!-- Loading screen -->
+    <div class="loading-screen">
+      <div class="loading-logo">WB</div>
+      <div class="loading-spinner"></div>
+      <div class="loading-text">جاري تحميل منصة إدارة شات بوت واتساب...</div>
+    </div>
+  </body>
+</html>
