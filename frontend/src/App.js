@@ -33,11 +33,11 @@ function AppRoutes() {
     <Routes>
       <Route 
         path="/login" 
-        element={user ? <Navigate to="/" /> : <Login />} 
+        element={user ? <Navigate to="/" replace /> : <Login />} 
       />
       <Route 
         path="/*" 
-        element={user ? <Dashboard /> : <Navigate to="/login" />} 
+        element={user ? <Dashboard /> : <Navigate to="/login" replace />} 
       />
     </Routes>
   );
@@ -63,7 +63,7 @@ function App() {
     <QueryClientProvider client={queryClient}>
       <AuthProvider>
         <SocketProvider>
-          <Router>
+          <Router basename="/"> {/* مهم: إضافة basename="/" */}
             <div className="App">
               <AppRoutes />
               <Toaster 
