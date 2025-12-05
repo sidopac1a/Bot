@@ -1,13 +1,14 @@
 import axios from 'axios';
 import toast from 'react-hot-toast';
 
-// تحديد API URL بطريقة آمنة
-const API_BASE_URL = process.env.REACT_APP_API_URL || 
-                     process.env.NODE_ENV === 'production' 
-                       ? 'https://whatsapp-chatbot-platform.onrender.com' 
-                       : 'http://localhost:5000';
+// تحديد API URL بطريقة آمنة وصحيحة
+const API_BASE_URL = process.env.REACT_APP_API_URL
+  ? process.env.REACT_APP_API_URL
+  : (process.env.NODE_ENV === 'production'
+      ? 'https://whatsapp-chatbot-platform.onrender.com'
+      : 'http://localhost:5000');
 
-console.log('API Base URL:', API_BASE_URL); // للتأكد من الرابط
+console.log('API Base URL:', API_BASE_URL);
 
 class ApiService {
   constructor() {
@@ -44,7 +45,7 @@ class ApiService {
       },
       (error) => {
         console.error('API Error:', error);
-        
+
         if (error.response?.status === 401) {
           localStorage.removeItem('token');
           window.location.href = '/login';
@@ -53,13 +54,13 @@ class ApiService {
         } else if (error.code === 'NETWORK_ERROR' || !error.response) {
           toast.error('خطأ في الاتصال بالخادم');
         }
-        
+
         return Promise.reject(error);
       }
     );
   }
 
-  // باقي الكود كما هو...
+  // باقي الدوال كما هي...
   setAuthToken(token) {
     if (token) {
       this.client.defaults.headers.common['Authorization'] = `Bearer ${token}`;
