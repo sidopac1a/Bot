@@ -5,17 +5,12 @@
     {
       "src": "package.json",
       "use": "@vercel/static-build",
-      "config": {
-        "distDir": "build"
-      }
+      "config": { "distDir": "build" }
     }
   ],
   "rewrites": [
     { "source": "/(.*)", "destination": "/index.html" }
   ],
-  "env": {
-    "REACT_APP_API_URL": "@react_app_api_url"
-  },
   "headers": [
     {
       "source": "/(.*)",
@@ -25,5 +20,8 @@
         { "key": "Referrer-Policy", "value": "strict-origin-when-cross-origin" }
       ]
     }
-  ]
+  ],
+  "env": {
+    "REACT_APP_API_URL": "@react_app_api_url"
+  }
 }
