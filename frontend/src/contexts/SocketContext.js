@@ -12,6 +12,12 @@ export const useSocket = () => {
   return context;
 };
 
+const SOCKET_URL = process.env.REACT_APP_API_URL
+  ? process.env.REACT_APP_API_URL
+  : (process.env.NODE_ENV === 'production'
+      ? 'https://whatsapp-chatbot-platform.onrender.com'
+      : 'http://localhost:5000');
+
 export const SocketProvider = ({ children }) => {
   const [socket, setSocket] = useState(null);
   const [connected, setConnected] = useState(false);
@@ -19,7 +25,7 @@ export const SocketProvider = ({ children }) => {
 
   useEffect(() => {
     if (user) {
-      const newSocket = io(process.env.REACT_APP_API_URL || 'http://localhost:5000', {
+      const newSocket = io(SOCKET_URL, {
         auth: {
           token: localStorage.getItem('token')
         }
