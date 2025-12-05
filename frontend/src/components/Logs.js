@@ -13,6 +13,7 @@ import {
 import { format } from 'date-fns';
 import { ar } from 'date-fns/locale';
 import api from '../services/api';
+import toast from 'react-hot-toast';   // هــــــــــذا السطر اللي كان ناقص
 
 const Logs = () => {
   const [filters, setFilters] = useState({
@@ -45,7 +46,7 @@ const Logs = () => {
     setFilters(prev => ({
       ...prev,
       [key]: value,
-      page: 1 // Reset to first page when filtering
+      page: 1
     }));
   };
 
@@ -54,7 +55,6 @@ const Logs = () => {
   };
 
   const exportLogs = () => {
-    // This would trigger a download of the logs
     toast.success('سيتم تحميل السجلات قريباً...');
   };
 
@@ -108,7 +108,6 @@ const Logs = () => {
           </button>
         </div>
 
-        {/* Search Bar */}
         <div className="relative mb-4">
           <Search className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-4 h-4" />
           <input
@@ -120,7 +119,6 @@ const Logs = () => {
           />
         </div>
 
-        {/* Advanced Filters */}
         {showFilters && (
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
             <div>
@@ -241,7 +239,6 @@ const Logs = () => {
               ))}
             </div>
 
-            {/* Pagination */}
             {pagination.total > pagination.limit && (
               <div className="p-6 border-t border-gray-200 dark:border-gray-700">
                 <div className="flex items-center justify-between">
