@@ -1,0 +1,529 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>إيصال الدفع - Walletii</title>
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Cairo', sans-serif;
+            background: linear-gradient(135deg, #0f2027 0%, #203a43 50%, #2c5364 100%);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+            position: relative;
+            overflow-x: hidden;
+        }
+        
+        body::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle, rgba(64, 224, 208, 0.1) 0%, transparent 70%);
+            animation: pulse 15s ease-in-out infinite;
+        }
+        
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); opacity: 0.5; }
+            50% { transform: scale(1.1); opacity: 0.8; }
+        }
+        
+        .container {
+            width: 100%;
+            max-width: 600px;
+            position: relative;
+            z-index: 1;
+        }
+        
+        .receipt-card {
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 24px;
+            overflow: hidden;
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5), 
+                        0 0 0 1px rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(20px);
+            transform: translateY(0);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+        
+        .receipt-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 35px 60px -12px rgba(0, 0, 0, 0.6),
+                        0 0 0 1px rgba(64, 224, 208, 0.3);
+        }
+        
+        .header {
+            background: linear-gradient(135deg, #0a1f1c 0%, #0d2b26 100%);
+            padding: 30px 35px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .header::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            right: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(45deg, transparent 30%, rgba(64, 224, 208, 0.05) 50%, transparent 70%);
+            animation: shimmer 3s infinite;
+        }
+        
+        @keyframes shimmer {
+            0% { transform: translateX(-100%); }
+            100% { transform: translateX(100%); }
+        }
+        
+        .logo {
+            font-size: 32px;
+            font-weight: 800;
+            background: linear-gradient(135deg, #40e0d0 0%, #20b2aa 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            letter-spacing: -1px;
+            position: relative;
+            z-index: 1;
+        }
+        
+        .header-info {
+            text-align: left;
+            color: white;
+            position: relative;
+            z-index: 1;
+        }
+        
+        .header-title {
+            font-size: 18px;
+            font-weight: 700;
+            margin-bottom: 8px;
+            opacity: 0.9;
+        }
+        
+        .payment-id {
+            font-size: 14px;
+            opacity: 0.7;
+            font-family: 'Courier New', monospace;
+        }
+        
+        .payment-id span {
+            color: #40e0d0;
+            font-weight: 700;
+            opacity: 1;
+        }
+        
+        .content {
+            padding: 35px;
+        }
+        
+        .amount-section {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 30px;
+            margin-bottom: 30px;
+            padding-bottom: 30px;
+            border-bottom: 2px dashed #e0e0e0;
+            position: relative;
+        }
+        
+        .amount-section::after {
+            content: '';
+            position: absolute;
+            bottom: -10px;
+            left: -35px;
+            width: 20px;
+            height: 20px;
+            background: #0f2027;
+            border-radius: 50%;
+        }
+        
+        .amount-section::before {
+            content: '';
+            position: absolute;
+            bottom: -10px;
+            right: -35px;
+            width: 20px;
+            height: 20px;
+            background: #0f2027;
+            border-radius: 50%;
+        }
+        
+        .amount-left, .amount-right {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+        
+        .amount-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .amount-label {
+            color: #666;
+            font-size: 14px;
+            font-weight: 600;
+        }
+        
+        .amount-value {
+            color: #0a1f1c;
+            font-size: 16px;
+            font-weight: 700;
+        }
+        
+        .amount-value.total {
+            font-size: 20px;
+            color: #0a1f1c;
+        }
+        
+        .status-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            background: linear-gradient(135deg, #d4f5e9 0%, #a8e6cf 100%);
+            color: #0d7377;
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-weight: 700;
+            font-size: 14px;
+            box-shadow: 0 4px 15px rgba(13, 115, 119, 0.2);
+        }
+        
+        .status-badge::after {
+            content: '✓';
+            background: #0d7377;
+            color: white;
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 12px;
+        }
+        
+        .parties-section {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 0;
+            position: relative;
+            margin-bottom: 30px;
+        }
+        
+        .party-box {
+            padding: 25px;
+            position: relative;
+        }
+        
+        .party-box.sender {
+            border-left: 2px solid #f0f0f0;
+        }
+        
+        .party-icon {
+            width: 40px;
+            height: 40px;
+            background: linear-gradient(135deg, #f5f5f5 0%, #e0e0e0 100%);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 15px;
+            font-size: 20px;
+            color: #666;
+        }
+        
+        .party-title {
+            font-size: 12px;
+            color: #999;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 10px;
+        }
+        
+        .party-name {
+            font-size: 16px;
+            font-weight: 800;
+            color: #0a1f1c;
+            margin-bottom: 8px;
+            line-height: 1.4;
+        }
+        
+        .party-phone {
+            font-size: 14px;
+            color: #666;
+            font-family: 'Courier New', monospace;
+            direction: ltr;
+            text-align: right;
+        }
+        
+        .footer {
+            background: #f8f9fa;
+            padding: 25px 35px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-top: 1px solid #e0e0e0;
+        }
+        
+        .footer-logo {
+            font-size: 24px;
+            font-weight: 800;
+            color: #0a1f1c;
+            letter-spacing: -1px;
+        }
+        
+        .footer-date {
+            font-size: 13px;
+            color: #666;
+            font-weight: 600;
+        }
+        
+        .actions {
+            display: flex;
+            gap: 15px;
+            margin-top: 25px;
+            justify-content: center;
+        }
+        
+        .btn {
+            padding: 15px 30px;
+            border: none;
+            border-radius: 12px;
+            font-family: 'Cairo', sans-serif;
+            font-size: 16px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .btn::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.3), transparent);
+            transition: left 0.5s;
+        }
+        
+        .btn:hover::before {
+            left: 100%;
+        }
+        
+        .btn-primary {
+            background: linear-gradient(135deg, #40e0d0 0%, #20b2aa 100%);
+            color: #0a1f1c;
+            box-shadow: 0 10px 30px rgba(64, 224, 208, 0.3);
+        }
+        
+        .btn-primary:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 15px 40px rgba(64, 224, 208, 0.4);
+        }
+        
+        .btn-secondary {
+            background: rgba(255, 255, 255, 0.1);
+            color: white;
+            border: 2px solid rgba(255, 255, 255, 0.3);
+            backdrop-filter: blur(10px);
+        }
+        
+        .btn-secondary:hover {
+            background: rgba(255, 255, 255, 0.2);
+            border-color: rgba(255, 255, 255, 0.5);
+        }
+        
+        @media print {
+            body {
+                background: white;
+                padding: 0;
+            }
+            
+            body::before {
+                display: none;
+            }
+            
+            .receipt-card {
+                box-shadow: none;
+                border: 1px solid #ddd;
+            }
+            
+            .actions {
+                display: none;
+            }
+            
+            .receipt-card:hover {
+                transform: none;
+            }
+        }
+        
+        @media (max-width: 600px) {
+            .amount-section {
+                grid-template-columns: 1fr;
+                gap: 20px;
+            }
+            
+            .parties-section {
+                grid-template-columns: 1fr;
+            }
+            
+            .party-box.sender {
+                border-left: none;
+                border-top: 2px solid #f0f0f0;
+            }
+            
+            .header {
+                flex-direction: column;
+                gap: 20px;
+                text-align: center;
+            }
+            
+            .header-info {
+                text-align: center;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="receipt-card" id="receipt">
+            <div class="header">
+                <div class="logo">walletii</div>
+                <div class="header-info">
+                    <div class="header-title">تأكيد الدفع</div>
+                    <div class="payment-id">معرف الدفع: <span>DDH23SS3Q0</span></div>
+                </div>
+            </div>
+            
+            <div class="content">
+                <div class="amount-section">
+                    <div class="amount-left">
+                        <div class="amount-row">
+                            <span class="amount-label">المبلغ المرسل:</span>
+                            <span class="amount-value total">20.000 OMR</span>
+                        </div>
+                        <div class="amount-row">
+                            <span class="amount-label">الرسوم:</span>
+                            <span class="amount-value">0.000 OMR</span>
+                        </div>
+                        <div class="amount-row">
+                            <span class="amount-label">ضريبة القيمة المضافة:</span>
+                            <span class="amount-value">0.000 OMR</span>
+                        </div>
+                        <div class="amount-row">
+                            <span class="amount-label">المجموع:</span>
+                            <span class="amount-value total">20.000 OMR</span>
+                        </div>
+                    </div>
+                    
+                    <div class="amount-right">
+                        <div class="amount-row">
+                            <span class="amount-label">تاريخ التنفيذ:</span>
+                            <span class="amount-value">17 أبريل 2026، 19:58 GMT+4</span>
+                        </div>
+                        <div class="amount-row">
+                            <span class="amount-label">الحالة:</span>
+                            <span class="status-badge">مكتمل</span>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="parties-section">
+                    <div class="party-box recipient">
+                        <div class="party-icon">↓</div>
+                        <div class="party-title">المستلم</div>
+                        <div class="party-name">SAEE##SHAH</div>
+                        <div class="party-phone">+968 7848 5419</div>
+                    </div>
+                    
+                    <div class="party-box sender">
+                        <div class="party-icon">↑</div>
+                        <div class="party-title">المرسل</div>
+                        <div class="party-name">AMINU SHARIF SALEH</div>
+                        <div class="party-phone">+968 7639 1770</div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="footer">
+                <div class="footer-logo">walletii</div>
+                <div class="footer-date">تم الإنشاء: 17/04/2026</div>
+            </div>
+        </div>
+        
+        <div class="actions">
+            <button class="btn btn-primary" onclick="printReceipt()">
+                <span>🖨️</span> طباعة PDF
+            </button>
+            <button class="btn btn-secondary" onclick="downloadPDF()">
+                <span>💾</span> تحميل PDF
+            </button>
+        </div>
+    </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+    <script>
+        function printReceipt() {
+            window.print();
+        }
+        
+        function downloadPDF() {
+            const element = document.getElementById('receipt');
+            const opt = {
+                margin: 0,
+                filename: 'payment-receipt-DDH23SS3Q0.pdf',
+                image: { type: 'jpeg', quality: 0.98 },
+                html2canvas: { 
+                    scale: 2,
+                    useCORS: true,
+                    logging: false
+                },
+                jsPDF: { 
+                    unit: 'mm', 
+                    format: 'a4', 
+                    orientation: 'portrait'
+                }
+            };
+            
+            const btn = document.querySelector('.btn-secondary');
+            const originalText = btn.innerHTML;
+            btn.innerHTML = '<span>⏳</span> جاري التحميل...';
+            btn.disabled = true;
+            
+            html2pdf().set(opt).from(element).save().then(() => {
+                btn.innerHTML = originalText;
+                btn.disabled = false;
+            }).catch(err => {
+                console.error('Error:', err);
+                btn.innerHTML = originalText;
+                btn.disabled = false;
+                alert('حدث خطأ أثناء تحميل الملف');
+            });
+        }
+    </script>
+</body>
+</html>
